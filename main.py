@@ -43,7 +43,25 @@
 
 #     FlaskApplication(app, options).run()
 
-from gunicorn.app.base import FlaskApplication
+# from gunicorn.app.base import FlaskApplication
+
+# from helper import app
+# from users.routes import users_bp
+
+# app.secret_key = 'your_secret_key'
+
+# app.register_blueprint(users_bp, url_prefix='/')
+
+# if __name__ == '__main__':
+#     options = {
+#         'bind': '0.0.0.0:5000',
+#         'workers': 4
+#     }
+
+#     FlaskApplication(app, options).run()
+
+
+from gunicorn.app.wsgiapp import WSGIApplication
 
 from helper import app
 from users.routes import users_bp
@@ -58,4 +76,4 @@ if __name__ == '__main__':
         'workers': 4
     }
 
-    FlaskApplication(app, options).run()
+    WSGIApplication(app).run(options)
