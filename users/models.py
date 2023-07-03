@@ -1,5 +1,6 @@
 import re
-from helper import conn
+from helper import db
+
 class User:
     def __init__(self, user_id, username, password, phone_number, email):
         self.user_id = user_id
@@ -10,12 +11,12 @@ class User:
 
     def save(self):
         try:
-            cur = conn.cursor()
+            cur = db.connection.cursor()
 
             cur.execute("INSERT INTO regdb (user_id, username, user_password, phone_number, email) VALUES (%s, %s, %s, %s, %s)",
                         (self.user_id, self.username, self.password, self.phone_number, self.email))
 
-            conn.commit()
+            db.connection.commit()
 
             cur.close()
 
@@ -28,7 +29,7 @@ class User:
     @staticmethod
     def get_user_by_id(user_id):
         try:
-            cur = conn.cursor()
+            cur = db.connection.cursor()
 
             cur.execute("SELECT * FROM regdb WHERE user_id = %s", (user_id,))
 
@@ -46,7 +47,7 @@ class User:
     @staticmethod
     def get_user_by_identifier(identifier):
         try:
-            cur = conn.cursor()
+            cur = db.connection.cursor()
 
             cur.execute("SELECT * FROM regdb WHERE user_id = %s OR phone_number = %s OR email = %s",
                         (identifier, identifier, identifier))
@@ -65,7 +66,7 @@ class User:
     @staticmethod
     def save_users():
         try:
-            cur = conn.cursor()
+            cur = db.connection.cursor()
 
             # Delete existing data from the regdb table
             # cur.execute("DELETE FROM regdb")
@@ -75,7 +76,7 @@ class User:
                 cur.execute("INSERT INTO regdb (user_id, username, user_password, phone_number, email) VALUES (%s, %s, %s, %s, %s)",
                             (user.user_id, user.username, user.password, user.phone_number, user.email))
 
-            conn.commit()
+            db.connection.commit()
 
             cur.close()
 
@@ -85,7 +86,7 @@ class User:
     @staticmethod
     def load_users():
         try:
-            cur = conn.cursor()
+            cur = db.connection.cursor()
 
             cur.execute("SELECT * FROM regdb")
 
@@ -115,7 +116,7 @@ class User:
     @staticmethod
     def is_unique_user_id(user_id):
         try:
-            cur = conn.cursor()
+            cur = db.connection.cursor()
 
             cur.execute("SELECT * FROM regdb WHERE user_id = %s", (user_id,))
 

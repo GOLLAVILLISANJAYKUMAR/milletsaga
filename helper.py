@@ -1,18 +1,26 @@
-# This helper filer is used to remove circular depencency
-
 from flask import Flask
-# from flask_mysqldb import MySQL
-import psycopg2
-# app = Flask(__name__)
-app = Flask(__name__, instance_relative_config=False)
-app.config['POSTGRES_HOST'] = 'dpg-cih4kedgkuvojj96qod0-a'
-app.config['POSTGRES_USER'] = 'milletsaga_user'
-app.config['POSTGRES_PASSWORD'] = 'PNUr51qtkmMYsFczfxJfU2NexgFHz0sO'
-app.config['POSTGRES_DB'] = 'milletsaga'
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
-# Establish a connection to PostgreSQL
-conn = psycopg2.connect(
-    host=app.config['POSTGRES_HOST'],
-    user=app.config['POSTGRES_USER'],
-    password=app.config['POSTGRES_PASSWORD'],
-    dbname=app.config['POSTGRES_DB'])
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://milletsaga_user:PNUr51qtkmMYsFczfxJfU2NexgFHz0sO@dpg-cih4kedgkuvojj96qod0-a/milletsaga'
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+class Regtb(db.Model):
+    __tablename__ = 'regtb'
+    user_id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False)
+    password = db.Column(db.String(50), nullable=False)
+    phone_number = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+
+    def __init__(self, user_id,username,password,phone_number,email):
+        self.user_id=user_id
+        self.username=username
+        self.password=password
+        self.phone_number=phone_number
+        self.email=email
+
+
+
