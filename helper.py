@@ -7,7 +7,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://milletsaga_user:PNUr51qtkm
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-class regtb(db.Model):
+class Regtb(db.Model):
     __tablename__ = 'regtb'
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False)
