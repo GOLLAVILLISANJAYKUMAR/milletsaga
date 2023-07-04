@@ -1,11 +1,8 @@
-
 from gunicorn.app.wsgiapp import WSGIApplication
-
 from helper import app
 from users.routes import users_bp
 
 app.secret_key = 'your_secret_key'
-
 app.register_blueprint(users_bp, url_prefix='/')
 
 if __name__ == '__main__':

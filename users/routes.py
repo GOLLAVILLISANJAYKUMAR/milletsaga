@@ -11,19 +11,25 @@ def index():
 def signup():
     user_id = request.form['user_id'].lower()
     username = request.form['username']
-    user_password = request.form['user_password']
+    user_password = request.form['password']
     confirm_password = request.form['confirm_password']
     phone_number = request.form['phone_number']
     email = request.form['email']
 
     if not User.is_valid_user_id(user_id):
-        return render_template('signup_failed.html', message='Invalid user ID. User ID must start with a lowercase character or underscore, can end with a lowercase character, underscore, or number, and can contain lowercase alphanumeric characters, underscores, and periods in the middle. Length: 4-30')
+        return render_template('signup_failed.html',
+                               message='Invalid user ID. User ID must start with a lowercase character or underscore, '
+                                       'can end with a lowercase character, underscore, or number, and can contain '
+                                       'lowercase alphanumeric characters, underscores, and periods in the middle. '
+                                       'Length: 4-30')
 
     if not User.is_unique_user_id(user_id):
         return render_template('signup_failed.html', message='User ID already exists. Please choose a different user ID.')
 
     if not User.validate_password(user_password):
-        return render_template('signup_failed.html', message='Invalid password. Password must be at least 8 characters long and contain at least one digit, one uppercase letter, one lowercase letter, and one special character.')
+        return render_template('signup_failed.html', message='Invalid password. Password must be at least 8 characters '
+                                                             'long and contain at least one digit, one uppercase '
+                                                             'letter, one lowercase letter, and one special character.')
 
     if user_password != confirm_password:
         return render_template('signup_failed.html', message='Password and confirm password do not match. Please re-enter the password.')
@@ -40,7 +46,7 @@ def signup():
 @users_bp.route('/login', methods=['POST'])
 def login():
     login_identifier = request.form['login_id']
-    user_password = request.form['user_password']
+    user_password = request.form['password']
 
     user = User.get_user_by_identifier(login_identifier)
 

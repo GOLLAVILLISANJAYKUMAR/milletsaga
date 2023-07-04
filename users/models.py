@@ -1,7 +1,14 @@
 import re
 from helper import db
 
-class User:
+class User(db.Model):
+    __tablename__ = 'regdb'
+    user_id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False)
+    user_password = db.Column(db.String(50), nullable=False)
+    phone_number = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+
     def __init__(self, user_id, username, user_password, phone_number, email):
         self.user_id = user_id
         self.username = username
@@ -11,15 +18,8 @@ class User:
 
     def save(self):
         try:
-            cur = db.connection.cursor()
-
-            cur.execute("INSERT INTO regdb (user_id, username, user_password, phone_number, email) VALUES (%s, %s, %s, %s, %s)",
-                        (self.user_id, self.username, self.user_password, self.phone_number, self.email))
-
-            db.connection.commit()
-
-            cur.close()
-
+            db.session.add(self)
+            db.session.commit()
         except Exception as e:
             print(f"Error: {e}")
 
@@ -28,85 +28,13 @@ class User:
 
     @staticmethod
     def get_user_by_id(user_id):
-        try:
-            cur = db.connection.cursor()
-
-            cur.execute("SELECT * FROM regdb WHERE user_id = %s", (user_id,))
-
-            result = cur.fetchone()
-            cur.close()
-
-            if result:
-                return User(*result)
-
-        except Exception as e:
-            print(f"Error: {e}")
-
-        return None
+        return User.query.get(user_id)
 
     @staticmethod
     def get_user_by_identifier(identifier):
-        try:
-            cur = db.connection.cursor()
-
-            cur.execute("SELECT * FROM regdb WHERE user_id = %s OR phone_number = %s OR email = %s",
-                        (identifier, identifier, identifier))
-
-            result = cur.fetchone()
-            cur.close()
-
-            if result:
-                return User(*result)
-
-        except Exception as e:
-            print(f"Error: {e}")
-
-        return None
-
-    @staticmethod
-    def save_users():
-        try:
-            cur = db.connection.cursor()
-
-            # Delete existing data from the regdb table
-            # cur.execute("DELETE FROM regdb")
-
-            # Insert each user into the regdb table
-            for user in User.users:
-                cur.execute("INSERT INTO regdb (user_id, username, user_password, phone_number, email) VALUES (%s, %s, %s, %s, %s)",
-                            (user.user_id, user.username, user.user_password, user.phone_number, user.email))
-
-            db.connection.commit()
-
-            cur.close()
-
-        except Exception as e:
-            print(f"Error: {e}")
-
-    @staticmethod
-    def load_users():
-        try:
-            cur = db.connection.cursor()
-
-            cur.execute("SELECT * FROM regdb")
-
-            fetchdata = cur.fetchall()
-            cur.close()
-
-            User.users = []  # Clear the existing users list
-
-            for user in fetchdata:
-                user_id = user['user_id']
-                username = user['username']
-                user_password = user['user_password']
-                phone_number = user['phone_number']
-                email = user['email']
-
-                User.users.append(User(user_id, username, user_password, phone_number, email))
-
-        except Exception as e:
-            print(f"Error: {e}")
-            User.users = []
+        return User.query.filter(
+            (User.user_id == identifier) | (User.phone_number == identifier) | (User.email == identifier)
+        ).first()
 
     @staticmethod
     def is_valid_user_id(user_id):
@@ -115,20 +43,7 @@ class User:
 
     @staticmethod
     def is_unique_user_id(user_id):
-        try:
-            cur = db.connection.cursor()
-
-            cur.execute("SELECT * FROM regdb WHERE user_id = %s", (user_id,))
-
-            result = cur.fetchone()
-            cur.close()
-
-            return result is None
-
-        except Exception as e:
-            print(f"Error: {e}")
-
-        return False
+        return User.query.filter_by(user_id=user_id).count() == 0
 
     @staticmethod
     def validate_password(user_password):
@@ -138,5 +53,3 @@ class User:
     @staticmethod
     def is_valid_username(username):
         return 3 <= len(username) <= 30
-
-User.load_users()
