@@ -2,7 +2,7 @@ import re
 from helper import db
 
 class User(db.Model):
-    __tablename__ = 'regdb'
+    __tablename__ = 'regtb'
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False)
     user_password = db.Column(db.String(50), nullable=False)
