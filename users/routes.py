@@ -11,7 +11,7 @@ def index():
 def signup():
     user_id = request.form['user_id'].lower()
     username = request.form['username']
-    password = request.form['password']
+    user_password = request.form['user_password']
     confirm_password = request.form['confirm_password']
     phone_number = request.form['phone_number']
     email = request.form['email']
@@ -22,16 +22,16 @@ def signup():
     if not User.is_unique_user_id(user_id):
         return render_template('signup_failed.html', message='User ID already exists. Please choose a different user ID.')
 
-    if not User.validate_password(password):
+    if not User.validate_password(user_password):
         return render_template('signup_failed.html', message='Invalid password. Password must be at least 8 characters long and contain at least one digit, one uppercase letter, one lowercase letter, and one special character.')
 
-    if password != confirm_password:
+    if user_password != confirm_password:
         return render_template('signup_failed.html', message='Password and confirm password do not match. Please re-enter the password.')
 
     if not User.is_valid_username(username):
         return render_template('signup_failed.html', message='Invalid username. Username must be a minimum of 3 characters and a maximum of 30 characters.')
 
-    new_user = User(user_id, username, password, phone_number, email)
+    new_user = User(user_id, username, user_password, phone_number, email)
     new_user.save()
 
     session['user_id'] = new_user.user_id
@@ -40,11 +40,11 @@ def signup():
 @users_bp.route('/login', methods=['POST'])
 def login():
     login_identifier = request.form['login_id']
-    password = request.form['password']
+    user_password = request.form['user_password']
 
     user = User.get_user_by_identifier(login_identifier)
 
-    if user is None or not user.check_password(password):
+    if user is None or not user.check_password(user_password):
         return render_template('login_failed.html', message='Invalid credentials. Please try again.')
 
     session['user_id'] = user.user_id
