@@ -1,11 +1,21 @@
 from flask import Blueprint, render_template, request, session, redirect
-from users.models import User
+from users.models import User,db
 
 users_bp = Blueprint('users', __name__)
 
 @users_bp.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
+
+@users_bp.route('/test-database')
+def test_database():
+    try:
+        db.session.execute('SELECT 1')  # Execute a simple query
+        db.session.commit()
+        return 'Database connection successful'
+    except :
+        return 'Database connection failed'
+
 
 @users_bp.route('/signup', methods=['POST'])
 def signup():

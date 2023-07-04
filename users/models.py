@@ -2,23 +2,23 @@ import re
 from helper import db
 
 class User(db.Model):
-    # __tablename__ = 'regtb'
-    # user_id = db.Column(db.Integer, primary_key=True)
-    # username = db.Column(db.String(50), nullable=False)
-    # user_password = db.Column(db.String(50), nullable=False)
-    # phone_number = db.Column(db.String(50), nullable=False)
-    # email = db.Column(db.String(50), nullable=False)
+    __tablename__ = 'regtb'
+    user_id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), nullable=False)
+    user_password = db.Column(db.String(50), nullable=False)
+    phone_number = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
 
-    # def __repr__(self):
-    #     return f"User_id: {self.user_id}, Name: {self.username}, Password: {self.user_password}, Phone: {self.phone_number}, Email: {self.email}"
-
-    def __init__(self, user_id, username, user_password, phone_number, email):
-        self.user_id = user_id
+    def __repr__(self):
+        return f"User_id: {self.user_id}, Name: {self.username}, Password: {self.user_password}, Phone: {self.phone_number}, Email: {self.email}"
+    
+    def __init__(self,user_id, username, user_password, phone_number, email):
+        self.user_id=user_id
         self.username = username
         self.user_password = user_password
         self.phone_number = phone_number
         self.email = email
-
+    
     def save(self):
         try:
             db.session.add(self)
