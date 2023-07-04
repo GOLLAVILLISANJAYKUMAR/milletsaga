@@ -21,6 +21,3 @@ class Regtb(db.Model):
         self.password=password
         self.phone_number=phone_number
         self.email=email
-
-
-
